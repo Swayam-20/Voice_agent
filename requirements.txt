@@ -1,0 +1,7 @@
+openai[voice_helpers]
+python-dotenv
+requests
+pydantic
+numpy
+SpeechRecognition
+PyAudio

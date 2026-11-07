@@ -100,14 +100,8 @@ cd project
 ## 2. Install Dependencies
 
 ```bash
-pip install openai
-pip install python-dotenv
-pip install requests
-pip install pydantic
-pip install SpeechRecognition
-pip install pyaudio
+pip install -r requirements.txt
 ```
-
 ---
 
 ## 3. Create Environment File
@@ -286,22 +280,36 @@ Weather of London is Sunny 28°C
 
 ## Command Tool
 
-Executes Linux commands.
+Runs one CLI command from the project folder and returns its output and exit code so the assistant can continue. Routine development commands run directly; destructive, system-wide, network, and package-install commands ask for spoken approval.
 
 ```python
-run_command(cmd)
+run_command(input)
 ```
 
-Example:
+Example input:
 
 ```text
-run_command("ls")
+{"command":"python3 -m compileall .","cwd":"."}
 ```
 
-Returns terminal output.
+Commands run without a shell, use the project virtual environment when present, capture output, and have a 120-second timeout.
 
-⚠️ Warning:
-Executing shell commands can be risky.
+## Workspace Coding Tools
+
+The voice agent can inspect and modify files inside the project folder:
+
+- `list_files(path)` lists a folder.
+- `read_file(path)` reads a UTF-8 file.
+- `create_directory(path)` creates a folder with the `mkdir` CLI.
+- `write_file(input)` writes text from JSON containing `path`, `content`, and optional `overwrite`.
+
+File tools reject paths outside the project and block `.env`, `.git`, `.venv`, and `__pycache__`.
+For coding tasks, the assistant can inspect files, make requested changes, and run a CLI command after you approve it by voice.
+
+## Voice Interruption
+
+Say “stop” while the assistant is speaking, then pause briefly. Playback stops after speech recognition identifies the command. Words after “stop” are treated as edits to the current plan; if you only say “stop,” the agent listens for your next instruction.
+The assistant skips routine spoken updates and speaks the final result or a necessary approval request.
 
 ---
 
